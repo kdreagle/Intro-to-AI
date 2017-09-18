@@ -82,7 +82,7 @@ def bfs(graph, start, goal):
     queue.append([start])
     count = 0
     while queue:
-        if count > n*n*n:
+        if count > n*n*n*n:
             return []
         path = queue.pop(0)
         node = path[-1]
