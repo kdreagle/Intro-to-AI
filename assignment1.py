@@ -1,5 +1,13 @@
 from tkinter import *
 from random import randint
+import collections
+
+
+class Tree(object):
+    def __init__(self):
+        self.left = None
+        self.right = None
+        self.data = None
 
 
 class Puzzle: 
@@ -52,8 +60,18 @@ class Puzzle:
 
         # remove all edges going out from the goal cell back to itself
         graph[(n,n)]=[]
-        print(graph)
         
+        print(bfs(graph,(1,1)))
+
+def bfs(graph, root):
+    visited, queue = set(), collections.deque([root])
+    while queue:
+        vertex = queue.popleft()
+        for neighbour in graph[vertex]: 
+            if neighbour not in visited: 
+                visited.add(neighbour) 
+                queue.append(neighbour) 
+    return visited
 
 root = Tk()
 puzzle = Puzzle(root)
