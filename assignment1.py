@@ -64,13 +64,14 @@ class Puzzle:
         print(bfs(graph,(1,1)))
 
 def bfs(graph, root):
-    visited, queue = set(), collections.deque([root])
+    visited = set()
+    queue = collections.deque([root])
     while queue:
         vertex = queue.popleft()
-        for neighbour in graph[vertex]: 
-            if neighbour not in visited: 
-                visited.add(neighbour) 
-                queue.append(neighbour) 
+        for neighbor in graph[vertex]: 
+            if neighbor not in visited: 
+                visited.add(neighbor) 
+                queue.append(neighbor) 
     return visited
 
 root = Tk()
