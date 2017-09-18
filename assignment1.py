@@ -2,15 +2,7 @@ from tkinter import *
 from random import randint
 import collections
 
-
 n = 5
-
-
-class Tree(object):
-    def __init__(self):
-        self.left = None
-        self.right = None
-        self.data = None
 
 
 class Puzzle: 
@@ -65,6 +57,7 @@ class Puzzle:
 
         x_count = 0
         solvable = False
+        # create the gui showing the shortest distance to each cell
         for x in range(1, n+1):
             for y in range(1,n+1):
                 shortest_path=len(bfs(graph,(1,1),(x,y))) - 1 
@@ -89,7 +82,7 @@ def bfs(graph, start, goal):
     queue.append([start])
     count = 0
     while queue:
-        if count > n*n:
+        if count > n*n*n:
             return []
         path = queue.pop(0)
         node = path[-1]
