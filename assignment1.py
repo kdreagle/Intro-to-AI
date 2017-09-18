@@ -63,12 +63,6 @@ class Puzzle:
         # remove all edges going out from the goal cell back to itself
         graph[(n,n)]=[]
 
-##        visited = bfs(graph,(1,1))
-##        
-##        if (n,n) not in visited:
-##            print("This puzzle cannot be solved")
-
-
         x_count = 0
         solvable = False
         for x in range(1, n+1):
@@ -89,38 +83,18 @@ class Puzzle:
         if not solvable:
             x_count = x_count * -1
             print("The function value is: " + str(x_count))
-##def bfs(graph, root):
-##    visited = set()
-##    queue = collections.deque([root])
-##    while queue:
-##        vertex = queue.popleft()
-##        print(vertex)
-##        print(graph[vertex])
-##        for neighbor in graph[vertex]:
-##            print(neighbor)
-##            if neighbor not in visited: 
-##                visited.add(neighbor) 
-##                queue.append(neighbor) 
-##    return visited
 
-def bfs(graph, start, end):
-    # maintain a queue of paths
+def bfs(graph, start, goal):
     queue = []
-    # push the first path into the queue
     queue.append([start])
     count = 0
     while queue:
         if count > n*n:
             return []
-        # get the first path from the queue
         path = queue.pop(0)
-        # get the last node from the path
         node = path[-1]
-        # path found
-        if node == end:
+        if node == goal:
             return path
-        
-        # enumerate all adjacent nodes, construct a new path and push it into the queue
         for adjacent in graph.get(node, []):
             new_path = list(path)
             new_path.append(adjacent)
