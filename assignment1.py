@@ -2,7 +2,7 @@ from tkinter import *
 from random import randint
 import collections
 
-n = 5
+n = 11
 
 
 class Puzzle: 
@@ -27,7 +27,7 @@ class Puzzle:
                     row.append(random_jump)
                     self.button =  Button(frame1,text=str(random_jump),fg="red")
                     #self.button.config(height=frame.winfo_height()/n,width=frame.winfo_width()/n)
-                
+                self.button.config(width=2)
                 self.button.grid(row=x,column=y)
                 count += 1
                 
@@ -54,7 +54,7 @@ class Puzzle:
 
         # remove all edges going out from the goal cell back to itself
         graph[(n,n)]=[]
-
+        
         x_count = 0
         solvable = False
         # create the gui showing the shortest distance to each cell
@@ -62,20 +62,25 @@ class Puzzle:
             for y in range(1,n+1):
                 shortest_path=len(bfs(graph,(1,1),(x,y))) - 1 
                 if x == n and y == n and not shortest_path == -1 :
-                    print("The function value is: " + str(shortest_path))                    
+                    label_str = "Function value: " + str(shortest_path)
+                    self.label = Label(frame1, text=label_str, fg="black")
+                    self.label.grid(row=2*n, columnspan=n)
                     solvable = True
                 if shortest_path == -1:
                     x_count += 1
                     self.button =  Button(frame1,text="X",fg="blue")
                 else:
                     self.button =  Button(frame1,text=str(shortest_path),fg="blue")
-                
+
+                self.button.config(width=2)
                 self.button.grid(row=x-1+n,column=y-1)
                 
 
         if not solvable:
             x_count = x_count * -1
-            print("The function value is: " + str(x_count))
+            label_str = "Function value: " + str(x_count)
+            self.label = Label(frame1, text=label_str, bg="white", fg="black")
+            self.label.grid(row=2*n, columnspan=n)
 
 def bfs(graph, start, goal):
     queue = []
