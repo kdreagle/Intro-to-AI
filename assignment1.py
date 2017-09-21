@@ -31,7 +31,7 @@ class Puzzle:
 
 
     def generate_puzzle(self,frame):
-        n = 7
+        n = int(input("Enter the size of the puzzle: "))
         for x in range(0, n):
             row = []
             for y in range(0,n):
@@ -114,7 +114,7 @@ class Puzzle:
         self.label.grid(row=2*n+2, columnspan=n)
 
         # button to perform task 3
-        self.climb_button = Button(frame,text="Climb Hill",fg="Purple", command=lambda: self.climb_hill(frame,0))
+        self.climb_button = Button(frame,text="Climb Hill",fg="Purple", command=lambda: self.climb_hill(frame,int(input("Enter how many iterations you would like to climb: "))))
         self.climb_button.grid(row=2*n+3, columnspan=n)
 
 
@@ -149,8 +149,8 @@ class Puzzle:
         else:
             self.puzzle_values.append(self.bfs_grid[n-1][n-1])
 
-        if iterations < 50:
-            self.climb_hill(frame,iterations+1)
+        if iterations > 0:
+            self.climb_hill(frame,iterations-1)
         else:
             self.build_gui(frame)
             print(self.puzzle_values)
