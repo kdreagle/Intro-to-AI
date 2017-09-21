@@ -1,26 +1,27 @@
 from tkinter import *
 from random import randint
 import collections
+import time
 
 
 class Puzzle:
     grid = []
     bfs_grid = []
     graph = {}
-    puzzle_values = []
-
+    start_time = 0
     
     def __init__(self, master):
         frame = Frame(master)
         frame.pack()
 
-        self.generate_button = Button(frame,text="Generate Random Puzzle",fg="red", command=lambda: self.generate_puzzle(frame))
+        self.generate_button = Button(frame,text="Generate Random Puzzle",fg="red", command=lambda: self.generate_puzzle(frame,int(input("Enter the size of the puzzle: "))))
         self.read_button = Button(frame,text="Get Puzzle From File",fg="red", command=lambda: self.read_puzzle(frame))
         self.generate_button.grid(row=0,columnspan=10)
         self.read_button.grid(row=1,columnspan=10)
 
 
     def read_puzzle(self,frame):
+        self.grid = []
         with open("C:/Users/Kyle/Documents/AI/asst1/test.txt") as f:
             lines = f.readlines()
             lines = [[int(i) for i in line.split()] for line in lines]
@@ -30,8 +31,8 @@ class Puzzle:
         self.build_gui(frame)
 
 
-    def generate_puzzle(self,frame):
-        n = int(input("Enter the size of the puzzle: "))
+    def generate_puzzle(self,frame,n):
+        self.grid = []
         for x in range(0, n):
             row = []
             for y in range(0,n):
@@ -42,7 +43,8 @@ class Puzzle:
         self.grid[n-1][n-1]=0
         self.build_graph()
         self.bfs_the_whole_thing()
-        self.build_gui(frame)
+        if self.start_time == 0:
+            self.build_gui(frame)
 
 
     def build_graph(self):
@@ -114,12 +116,20 @@ class Puzzle:
         self.label.grid(row=2*n+2, columnspan=n)
 
         # button to perform task 3
-        self.climb_button = Button(frame,text="Climb Hill",fg="Purple", command=lambda: self.climb_hill(frame,int(input("Enter how many iterations you would like to climb: "))))
+        self.climb_button = Button(frame,text="Climb Hill",fg="Purple", command=lambda: self.task4(frame,int(input("Enter how many iterations to climb: ")),0))
         self.climb_button.grid(row=2*n+3, columnspan=n)
 
+        self.task4_button = Button(frame,text="Task 4",fg="Green", command=lambda: self.task4(frame,int(input("Enter how many iterations to climb: ")),int(input("Enter the number of random restarts: "))))
+        self.task4_button.grid(row=2*n+4, columnspan=n)
 
-    # task 3
-    def climb_hill(self,frame,iterations):
+
+    # task 3  and task 4
+    def climb_hill(self,frame,iterations,puzzle_values):
+
+        # start timer
+        if self.start_time == 0:
+            self.start_time = time.time()
+            
         n = len(self.grid)
         
         x,y = randint(1,n),randint(1,n)
@@ -147,14 +157,23 @@ class Puzzle:
             self.graph = old_graph
             self.bfs_grid = old_bfs_grid
         else:
-            self.puzzle_values.append(self.bfs_grid[n-1][n-1])
+            puzzle_values.append(self.bfs_grid[n-1][n-1])
 
         if iterations > 0:
-            self.climb_hill(frame,iterations-1)
+            self.climb_hill(frame,iterations-1,puzzle_values)
         else:
-            self.build_gui(frame)
-            print(self.puzzle_values)
-        
+            total_time = time.time() - self.start_time
+            print("Climbing the hill took " + str(total_time) + " seconds!")
+            print(puzzle_values)
+
+    # task 4 stuff
+    def task4(self,frame,iterations,restarts):
+        for i in range(0,restarts+1):
+            if (restarts > 0):
+                self.generate_puzzle(frame,len(self.grid))
+            self.climb_hill(frame,iterations,[])
+            
+        self.build_gui(frame)
         
 
 def bfs(graph, start, goal, n):
@@ -162,6 +181,7 @@ def bfs(graph, start, goal, n):
     queue.append([start])
     count = 0
     while queue:
+        # n*n*n*n*n*n*n*n for the OG example to work
         if count > n*n*n*n:
             return []
         path = queue.pop(0)
