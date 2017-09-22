@@ -186,10 +186,6 @@ class Puzzle:
         count = 0
         self.p = p
         self.climb_hill(frame,iterations,[])
-        for i in range(0,iterations):
-            num = random()
-            if num < p:
-                count += 1
         self.p = 0
         
 
