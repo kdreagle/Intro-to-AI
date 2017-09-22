@@ -1,5 +1,5 @@
 from tkinter import *
-from random import randint
+from random import *
 import collections
 import time
 
@@ -9,6 +9,7 @@ class Puzzle:
     bfs_grid = []
     graph = {}
     start_time = 0
+    p = 0
     
     def __init__(self, master):
         frame = Frame(master)
@@ -119,8 +120,13 @@ class Puzzle:
         self.climb_button = Button(frame,text="Climb Hill",fg="Purple", command=lambda: self.task4(frame,int(input("Enter how many iterations to climb: ")),0))
         self.climb_button.grid(row=2*n+3, columnspan=n)
 
+        # button to perform task 4
         self.task4_button = Button(frame,text="Task 4",fg="Green", command=lambda: self.task4(frame,int(input("Enter how many iterations to climb: ")),int(input("Enter the number of random restarts: "))))
         self.task4_button.grid(row=2*n+4, columnspan=n)
+
+        # button to perform task 5
+        self.task4_button = Button(frame,text="Task 5",fg="Brown", command=lambda: self.task5(frame,int(input("Enter how many iterations to climb: ")),float(input("Enter the probability of accepting a downhill move: "))))
+        self.task4_button.grid(row=2*n+5, columnspan=n)
 
 
     # task 3  and task 4
@@ -150,9 +156,10 @@ class Puzzle:
         self.build_graph()
 
         old_bfs_grid = self.bfs_grid
-        self.bfs_the_whole_thing()    
+        self.bfs_the_whole_thing()
+
         
-        if self.bfs_grid[n-1][n-1] < old_bfs_grid[n-1][n-1]:
+        if self.bfs_grid[n-1][n-1] < old_bfs_grid[n-1][n-1] and random() > self.p:
             self.grid = old_grid
             self.graph = old_graph
             self.bfs_grid = old_bfs_grid
@@ -174,6 +181,16 @@ class Puzzle:
             self.climb_hill(frame,iterations,[])
             
         self.build_gui(frame)
+
+    def task5(self,frame,iterations,p):
+        count = 0
+        self.p = p
+        self.climb_hill(frame,iterations,[])
+        for i in range(0,iterations):
+            num = random()
+            if num < p:
+                count += 1
+        self.p = 0
         
 
 def bfs(graph, start, goal, n):
