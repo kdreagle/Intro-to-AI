@@ -96,7 +96,7 @@ class Puzzle:
         for x in range(0, n):
             for y in range(0,n):
                 shortest_path=self.bfs_grid[x][y]
-                if shortest_path == "X":
+                if shortest_path == -1:
                     x_count += 1
                     self.button =  Button(frame,text="X",fg="blue")
                 else:
@@ -104,7 +104,7 @@ class Puzzle:
                 self.button.config(width=2)
                 self.button.grid(row=x+2+n,column=y)
                 
-        if shortest_path == "X":
+        if shortest_path == -1:
             function_value = x_count * -1
         else:
             function_value = shortest_path
@@ -204,7 +204,7 @@ def bfs(graph,root,goal):
                 if neighbor == goal:
                     return len(new_path) - 1
             visited.append(cell)
-    return "X"
+    return -1
 
 
 
