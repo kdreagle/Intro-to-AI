@@ -1,6 +1,5 @@
 from tkinter import *
 from random import *
-import collections
 import time
 
 
@@ -23,7 +22,7 @@ class Puzzle:
 
     def read_puzzle(self,frame):
         self.grid = []
-        with open("C:/Users/Kyle/Documents/AI/asst1/test.txt") as f:
+        with open("C:/Users/Kyle/Documents/AI/asst1/test1.txt") as f:
             lines = f.readlines()
             lines = [[int(i) for i in line.split()] for line in lines]
         self.grid = lines
@@ -73,14 +72,13 @@ class Puzzle:
         # remove all edges going out from the goal cell back to itself
         self.graph[(n,n)]=[]
 
-
     def bfs_the_whole_thing(self):
         self.bfs_grid = []
         n = len(self.grid)
         for x in range(1, n+1):
             row = []
             for y in range(1,n+1):
-                row.append(len(bfs(self.graph,(1,1),(x,y),n)) - 1)
+                row.append(bfs(self.graph,(1,1),(x,y)))
             self.bfs_grid.append(row)
 
     
@@ -98,7 +96,7 @@ class Puzzle:
         for x in range(0, n):
             for y in range(0,n):
                 shortest_path=self.bfs_grid[x][y]
-                if shortest_path == -1:
+                if shortest_path == "X":
                     x_count += 1
                     self.button =  Button(frame,text="X",fg="blue")
                 else:
@@ -106,7 +104,7 @@ class Puzzle:
                 self.button.config(width=2)
                 self.button.grid(row=x+2+n,column=y)
                 
-        if shortest_path == -1:
+        if shortest_path == "X":
             function_value = x_count * -1
         else:
             function_value = shortest_path
@@ -187,25 +185,27 @@ class Puzzle:
         self.p = p
         self.climb_hill(frame,iterations,[])
         self.p = 0
-        
 
-def bfs(graph, start, goal, n):
-    queue = []
-    queue.append([start])
-    count = 0
+
+def bfs(graph,root,goal):
+    visited = []
+    queue = [[root]]
+    if root == goal:
+        return 0
     while queue:
-        # n*n*n*n*n*n*n*n for the OG example to work
-        if count > n*n*n*n:
-            return []
         path = queue.pop(0)
-        node = path[-1]
-        if node == goal:
-            return path
-        for adjacent in graph.get(node, []):
-            new_path = list(path)
-            new_path.append(adjacent)
-            queue.append(new_path)
-        count += 1
+        cell = path[-1]
+        if cell not in visited:
+            neighbors = graph[cell]
+            for neighbor in neighbors:
+                new_path = list(path)
+                new_path.append(neighbor)
+                queue.append(new_path)
+                if neighbor == goal:
+                    return len(new_path) - 1
+            visited.append(cell)
+    return "X"
+
 
 
 root = Tk()
