@@ -124,8 +124,7 @@ class Puzzle:
 
         # button to perform task 3
         self.climb_button = Button(frame, text = "Task 3", fg = "Purple",
-                                   command = lambda: self.task4(frame, int(input("Enter how many iterations to climb: ")),
-                                                              0))
+                                   command = lambda: self.task3(frame, int(input("Enter how many iterations to climb: "))))
         self.climb_button.grid(row = 2 * n + 3, columnspan = n)
 
         # button to perform task 4
@@ -196,6 +195,20 @@ class Puzzle:
                     self.best_grid = self.grid
                     print(self.best_value)
                 
+
+    def task3(self, frame, iterations):
+        
+        self.start_time = time.time()
+
+        self.climb_hill(frame, iterations)
+        
+
+        total_time = time.time() - self.start_time
+        print("Run time: " + str(total_time) + " seconds!")
+
+        self.build_gui(frame)
+        
+        self.start_time = 0
 
 
     # task 4 stuff
