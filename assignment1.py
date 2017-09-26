@@ -1,12 +1,13 @@
+from tkinter import filedialog
 from tkinter import *
 from random import *
 import time
 import math
 
-
 class Puzzle:
     grid = []
     bfs_grid = []
+    best_grid = []
     graph = {}
     start_time = 0
     puzzle_values = []
@@ -26,7 +27,9 @@ class Puzzle:
 
     def read_puzzle(self, frame):
         self.grid = []
-        with open("C:/Users/Kyle/Documents/AI/asst1/test1.txt") as f:
+        path = filedialog.askopenfilename()
+        with open(path) as f:
+            f.readline() # skip the line the gives the puzzle size
             lines = f.readlines()
             lines = [[int(i) for i in line.split()] for line in lines]
         self.grid = lines
@@ -126,16 +129,16 @@ class Puzzle:
 
         # button to perform task 4
         self.task4_button = Button(frame, text = "Task 4", fg = "Green",
-                                   command = lambda: self.task4(frame, int(input("Enter how many iterations to climb: ")),
+                                   command = lambda: self.task4(frame, int(input("Enter how many iterations to climb per restart: ")),
                                                               int(input("Enter the number of random restarts: "))))
         self.task4_button.grid(row = 2 * n + 4, columnspan = n)
 
         # button to perform task 5
-        self.task4_button = Button(frame, text = "Task 5", fg = "Brown",
+        self.task5_button = Button(frame, text = "Task 5", fg = "Brown",
                                    command = lambda: self.task5(frame, int(input("Enter how many iterations to climb: ")),
                                                               float(input(
                                                                   "Enter the probability of accepting a downhill move: "))))
-        self.task4_button.grid(row = 2 * n + 5, columnspan = n)
+        self.task5_button.grid(row = 2 * n + 5, columnspan = n)
 
         # button to perform task 6
         self.task6_button = Button(frame, text = "Task 6", fg = "Brown",
@@ -146,12 +149,12 @@ class Puzzle:
         self.task6_button.grid(row = 2 * n + 6, columnspan = n)
 
         # button to perform task 7
-        self.task6_button = Button(frame, text = "Task 7", fg = "Brown",
+        self.task7_button = Button(frame, text = "Task 7", fg = "Brown",
                                    command = lambda: self.task7(frame,
                                                               int(input("Enter the size of the population: ")),
                                                                 int(input("Enter the number of generations: ")),
                                                                 float(input("Enter the probaility of mutation: "))))
-        self.task6_button.grid(row = 2 * n + 7, columnspan = n)
+        self.task7_button.grid(row = 2 * n + 7, columnspan = n)
 
 
     # task 3 and task 4
@@ -195,6 +198,7 @@ class Puzzle:
         restart_values = []
         grids = []
         bfs_grids = []
+        
         self.start_time = time.time()
         
         for i in range(0, restarts + 1):
@@ -204,15 +208,16 @@ class Puzzle:
             self.climb_hill(frame, iterations)
             grids.append(self.grid)
             bfs_grids.append(self.bfs_grid)
-            restart_values.append(self.puzzle_values[-1])
+            restart_values.append(max(self.puzzle_values))
             
         total_time = time.time() - self.start_time
         print("Run time: " + str(total_time) + " seconds!")
-        
+
         self.grid = []
         self.bfs_grid = []
         self.grid = grids[restart_values.index(max(restart_values))]
         self.bfs_grid = bfs_grids[restart_values.index(max(restart_values))]
+
         
         self.build_gui(frame)
         
@@ -228,7 +233,8 @@ class Puzzle:
         
         total_time = time.time() - self.start_time
         print("Run time: " + str(total_time) + " seconds!")
-
+        
+        
         self.build_gui(frame)
         
         self.p = 0
@@ -270,6 +276,9 @@ class Puzzle:
                 self.p = math.exp((old_val - new_val) / temp)
             except OverflowError:
                 self.p = 0
+            except ZeroDivisionError:
+                self.p = 0
+                
             
             if new_val < old_val and random() > self.p:
                 self.grid = old_grid
@@ -283,7 +292,7 @@ class Puzzle:
 
         total_time = time.time() - self.start_time
         print("Run time: " + str(total_time) + " seconds!")
-                    
+        
         self.build_gui(frame)
 
         self.p = 0
@@ -356,8 +365,6 @@ class Puzzle:
             if puzzle_values[i] > best_value:
                 best_value = puzzle_values[i]
                 best_puzzle = population[i]
-                
-
             
         for i in range(0, generations):
 
@@ -412,9 +419,11 @@ class Puzzle:
                 if puzzle_values[j] > best_value:
                     best_value = puzzle_values[j]
                     best_puzzle = population[j]
+                    
 
         total_time = time.time() - self.start_time
         print("Run time: " + str(total_time) + " seconds!")
+
 
         self.grid = best_puzzle
         self.build_graph()
