@@ -7,6 +7,7 @@ import math
 class Puzzle:
     grid = []
     bfs_grid = []
+    best_value = 0
     best_grid = []
     graph = {}
     start_time = 0
@@ -190,6 +191,11 @@ class Puzzle:
                 self.bfs_grid = old_bfs_grid
             else:
                 self.puzzle_values.append(self.bfs_grid[n - 1][n - 1])
+                if self.bfs_grid[n - 1][n - 1] > self.best_value:
+                    self.best_value = self.bfs_grid[n - 1][n - 1]
+                    self.best_grid = self.grid
+                    print(self.best_value)
+                
 
 
     # task 4 stuff
@@ -213,11 +219,14 @@ class Puzzle:
         total_time = time.time() - self.start_time
         print("Run time: " + str(total_time) + " seconds!")
 
-        self.grid = []
-        self.bfs_grid = []
-        self.grid = grids[restart_values.index(max(restart_values))]
-        self.bfs_grid = bfs_grids[restart_values.index(max(restart_values))]
+##        self.grid = []
+##        self.bfs_grid = []
+##        self.grid = grids[restart_values.index(max(restart_values))]
+##        self.bfs_grid = bfs_grids[restart_values.index(max(restart_values))]
 
+        self.grid = self.best_grid
+        self.build_graph()
+        self.bfs_the_whole_thing()
         
         self.build_gui(frame)
         
